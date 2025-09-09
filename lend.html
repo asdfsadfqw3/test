@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Заказ услуги - Татьяна Фадеева</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            background: rgba(255,255,255,0.9);
+            box-sizing: border-box;
+        }
+        button { 
+            background: #ff6b6b; 
+            color: white; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover { background: #ff5252; }
+        .required::after { content: " *"; color: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎯 Заказ услуги</h2>
+        <p>Заполните форму, и я свяжусь с вами для обсуждения деталей! 🤗</p>
+        
+        <form id="orderForm">
+            <div class="form-group">
+                <label class="required">Ваше имя:</label>
+                <input type="text" name="name" required placeholder="Как к вам обращаться?">
+            </div>
+            
+            <div class="form-group">
+                <label class="required">Телефон для связи:</label>
+                <input type="tel" name="phone" required placeholder="+7 XXX XXX XX XX">
+            </div>
+            
+            <div class="form-group">
+                <label class="required">Тип мероприятия:</label>
+                <select name="event_type" required>
+                    <option value="">-- Выберите тип --</option>
+                    <option value="Свадьба">💍 Свадьба</option>
+                    <option value="День рождения">🎂 День рождения</option>
+                    <option value="Корпоратив">🎄 Корпоратив</option>
+                    <option value="Детский праздник">🎪 Детский праздник</option>
+                    <option value="Юбилей">🎁 Юбилей</option>
+                    <option value="Другое">❓ Другое</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Предполагаемая дата:</label>
+                <input type="date" name="event_date">
+            </div>
+            
+            <div class="form-group">
+                <label>Количество гостей:</label>
+                <input type="number" name="guests" min="1" placeholder="Пример: 30">
+            </div>
+            
+            <div class="form-group">
+                <label>Примерный бюджет:</label>
+                <input type="text" name="budget" placeholder="Например: 20-30 тыс. руб.">
+            </div>
+            
+            <div class="form-group">
+                <label>Ваши пожелания и идеи:</label>
+                <textarea name="message" rows="4" placeholder="Расскажите о вашем видении мероприятия..."></textarea>
+            </div>
+            
+            <button type="submit">📨 Отправить заявку</button>
+        </form>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        
+        const form = document.getElementById('orderForm');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Собираем данные формы
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                event_type: formData.get('event_type'),
+                event_date: formData.get('event_date'),
+                guests: formData.get('guests'),
+                budget: formData.get('budget'),
+                message: formData.get('message')
+            };
+            
+            // Отправляем данные в Telegram
+            Telegram.WebApp.sendData(JSON.stringify(data));
+            
+            // Показываем анимацию загрузки
+            const button = form.querySelector('button');
+            button.innerHTML = '⏳ Отправка...';
+            button.disabled = true;
+            
+            // Закрываем WebApp через 2 секунды
+            setTimeout(() => {
+                Telegram.WebApp.close();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
